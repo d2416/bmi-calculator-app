@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'input_page.dart';
+import 'constants.dart';
 
 void main() => runApp(BMICalculator());
 
@@ -9,9 +10,9 @@ class BMICalculator extends StatelessWidget {
     return MaterialApp(
       title: "BMI Calculator",
       theme: ThemeData.dark().copyWith(
-        primaryColor: Color(0xFF0A0F21), // #0A0F21 => 0xFF0A0F21
+        primaryColor: kMainColor,
         accentColor: Colors.purple,
-        scaffoldBackgroundColor: Color(0xFF0A0F21),
+        scaffoldBackgroundColor: kMainColor,
         textTheme: TextTheme(
           bodyText2: TextStyle(
             color: Colors.white,
