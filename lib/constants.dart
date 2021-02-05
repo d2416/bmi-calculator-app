@@ -16,3 +16,22 @@ const kValueStyle = TextStyle(
   fontSize: 50.0,
   fontWeight: FontWeight.w900,
 );
+
+const kCalculateButtonTextStyle = TextStyle(
+  fontSize: 25.0,
+  fontWeight: FontWeight.bold,
+);
+
+const kResultValueStyle = TextStyle(
+  fontSize: 100.0,
+  fontWeight: FontWeight.bold,
+);
+
+const kResultLabelStyle = TextStyle(
+  fontSize: 25.0,
+  color: Color(0xFF24D876),
+);
+
+const kResultResultText = TextStyle(
+  fontSize: 20.0,
+);
