@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import 'package:bmi_calculator_app/constants.dart';
 
 class GenderCard extends StatelessWidget {
   GenderCard({@required this.icon, this.label});
