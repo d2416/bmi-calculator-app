@@ -22,10 +22,7 @@ class ResultsPage extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               child: Text(
                 'Your Result',
-                style: TextStyle(
-                  fontSize: 50.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: kTitleResultText,
               ),
             ),
           ),

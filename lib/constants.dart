@@ -35,3 +35,8 @@ const kResultLabelStyle = TextStyle(
 const kResultResultText = TextStyle(
   fontSize: 20.0,
 );
+
+const kTitleResultText = TextStyle(
+  fontSize: 50.0,
+  fontWeight: FontWeight.bold,
+);
