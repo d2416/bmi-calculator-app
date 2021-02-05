@@ -6,6 +6,7 @@ import 'package:bmi_calculator_app/components/reusable_card.dart';
 import 'package:bmi_calculator_app/constants.dart';
 import 'package:bmi_calculator_app/components/calculate_button.dart';
 import 'package:bmi_calculator_app/components/round_icon_button.dart';
+import 'package:bmi_calculator_app/services/calculator_brain.dart';
 
 enum Gender {
   male,
@@ -23,6 +24,9 @@ class _InputPageState extends State<InputPage> {
   int _height = 150;
   int _weight = 55;
   int _age = 20;
+
+  bool _disableMinusButton = false;
+  bool _disablePlusButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +56,20 @@ class _InputPageState extends State<InputPage> {
           ),
           CalculateButton(
             onPressed: () {
+              CalculatorBrain calc = CalculatorBrain(
+                age: _age,
+                height: _height,
+                weight: _weight,
+              );
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResultsPage(),
+                  builder: (context) => ResultsPage(
+                    bmiResults: calc.calculateBMI(),
+                    resultText: calc.getResult(),
+                    interpretation: calc.getInterpretation(),
+                  ),
                 ),
               );
             },
@@ -86,23 +100,37 @@ class _InputPageState extends State<InputPage> {
               children: [
                 RoundIconButton(
                   icon: FontAwesomeIcons.minus,
-                  onPressed: () {
-                    setState(() {
-                      _age--;
-                    });
-                  },
+                  onPressed: _disableMinusButton
+                      ? null
+                      : () {
+                          setState(() {
+                            if (_age <= 18) {
+                              _disableMinusButton = true;
+                              _disablePlusButton = false;
+                            } else {
+                              _age--;
+                            }
+                          });
+                        },
                 ),
                 SizedBox(
                   width: 10.0,
                 ),
                 RoundIconButton(
                   icon: FontAwesomeIcons.plus,
-                  onPressed: () {
-                    setState(() {
-                      _age++;
-                    });
-                  },
-                )
+                  onPressed: _disablePlusButton
+                      ? null
+                      : () {
+                          setState(() {
+                            if (_age >= 65) {
+                              _disablePlusButton = true;
+                              _disableMinusButton = false;
+                            } else {
+                              _age++;
+                            }
+                          });
+                        },
+                ),
               ],
             )
           ],
