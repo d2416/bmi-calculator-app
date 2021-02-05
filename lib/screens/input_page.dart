@@ -1,11 +1,11 @@
-import 'package:bmi_calculator_app/results_page.dart';
+import 'package:bmi_calculator_app/screens/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'gender_content.dart';
-import 'reusable_card.dart';
-import 'constants.dart';
-import 'calculate_button.dart';
-import 'round_icon_button.dart';
+import 'package:bmi_calculator_app/components/gender_content.dart';
+import 'package:bmi_calculator_app/components/reusable_card.dart';
+import 'package:bmi_calculator_app/constants.dart';
+import 'package:bmi_calculator_app/components/calculate_button.dart';
+import 'package:bmi_calculator_app/components/round_icon_button.dart';
 
 enum Gender {
   male,
