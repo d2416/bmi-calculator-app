@@ -8,6 +8,7 @@ class BMICalculator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //debugShowCheckedModeBanner: false, // don't show debug banner in emulator
       title: "BMI Calculator",
       theme: ThemeData.dark().copyWith(
         primaryColor: kMainColor,
