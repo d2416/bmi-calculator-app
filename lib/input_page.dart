@@ -1,8 +1,11 @@
+import 'package:bmi_calculator_app/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'gender_content.dart';
 import 'reusable_card.dart';
 import 'constants.dart';
+import 'calculate_button.dart';
+import 'round_icon_button.dart';
 
 enum Gender {
   male,
@@ -42,137 +45,110 @@ class _InputPageState extends State<InputPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(
-                  child: ReusableCard(
-                      color: kInactiveCardColor,
-                      cardChild: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'WEIGHT',
-                            style: kLabelTextStyle,
-                          ),
-                          Text(_weight.toString(), style: kValueStyle),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              RoundIconButton(
-                                icon: FontAwesomeIcons.minus,
-                                onPressed: () {
-                                  setState(() {
-                                    _weight--;
-                                  });
-                                },
-                              ),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                              RoundIconButton(
-                                icon: FontAwesomeIcons.plus,
-                                onPressed: () {
-                                  setState(() {
-                                    _weight++;
-                                  });
-                                },
-                              )
-                            ],
-                          )
-                        ],
-                      )),
-                ),
-                Expanded(
-                  child: ReusableCard(
-                    color: kInactiveCardColor,
-                    cardChild: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'AGE',
-                          style: kLabelTextStyle,
-                        ),
-                        Text(
-                          _age.toString(),
-                          style: kValueStyle,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            RoundIconButton(
-                              icon: FontAwesomeIcons.minus,
-                              onPressed: () {
-                                setState(() {
-                                  _age--;
-                                });
-                              },
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            RoundIconButton(
-                              icon: FontAwesomeIcons.plus,
-                              onPressed: () {
-                                setState(() {
-                                  _age++;
-                                });
-                              },
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                buildWeightCard(),
+                buildAgeCard(),
               ],
             ),
           ),
-          Container(
-            color: kBottomContainerColor,
-            margin: EdgeInsets.only(top: 10.0),
-            width: double.infinity,
-            height: kBottomContainerHeight,
+          CalculateButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(),
+                ),
+              );
+            },
+            label: 'CALCULATE',
           ),
         ],
       ),
     );
   }
 
-  Column buildLowCard(String label, int value) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          label,
-          style: kLabelTextStyle,
-        ),
-        Text(
-          value.toString(),
-          style: kValueStyle,
-        ),
-        Row(
+  Expanded buildAgeCard() {
+    return Expanded(
+      child: ReusableCard(
+        color: kInactiveCardColor,
+        cardChild: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RoundIconButton(
-              icon: FontAwesomeIcons.minus,
-              onPressed: () {
-                setState(() {
-                  value--;
-                });
-              },
+            Text(
+              'AGE',
+              style: kLabelTextStyle,
             ),
-            SizedBox(
-              width: 10.0,
+            Text(
+              _age.toString(),
+              style: kValueStyle,
             ),
-            RoundIconButton(
-              icon: FontAwesomeIcons.plus,
-              onPressed: () {
-                setState(() {
-                  value++;
-                });
-              },
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RoundIconButton(
+                  icon: FontAwesomeIcons.minus,
+                  onPressed: () {
+                    setState(() {
+                      _age--;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                RoundIconButton(
+                  icon: FontAwesomeIcons.plus,
+                  onPressed: () {
+                    setState(() {
+                      _age++;
+                    });
+                  },
+                )
+              ],
+            )
           ],
-        )
-      ],
+        ),
+      ),
+    );
+  }
+
+  Expanded buildWeightCard() {
+    return Expanded(
+      child: ReusableCard(
+          color: kInactiveCardColor,
+          cardChild: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'WEIGHT',
+                style: kLabelTextStyle,
+              ),
+              Text(_weight.toString(), style: kValueStyle),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RoundIconButton(
+                    icon: FontAwesomeIcons.minus,
+                    onPressed: () {
+                      setState(() {
+                        _weight--;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  RoundIconButton(
+                    icon: FontAwesomeIcons.plus,
+                    onPressed: () {
+                      setState(() {
+                        _weight++;
+                      });
+                    },
+                  )
+                ],
+              )
+            ],
+          )),
     );
   }
 
@@ -268,28 +244,6 @@ class _InputPageState extends State<InputPage> {
             _height = value.round();
           });
         },
-      ),
-    );
-  }
-}
-
-class RoundIconButton extends StatelessWidget {
-  RoundIconButton({@required this.icon, @required this.onPressed});
-
-  final IconData icon;
-  final Function onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      child: Icon(icon),
-      onPressed: onPressed,
-      shape: CircleBorder(),
-      fillColor: Color(0xFF222747),
-      elevation: 6.0,
-      constraints: BoxConstraints.tightFor(
-        width: 56.0,
-        height: 56.0,
       ),
     );
   }
