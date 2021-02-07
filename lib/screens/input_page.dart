@@ -1,3 +1,4 @@
+import 'package:bmi_calculator_app/providers/bmi_indicators_notifier.dart';
 import 'package:bmi_calculator_app/screens/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,27 +8,10 @@ import 'package:bmi_calculator_app/constants.dart';
 import 'package:bmi_calculator_app/components/calculate_button.dart';
 import 'package:bmi_calculator_app/components/round_icon_button.dart';
 import 'package:bmi_calculator_app/services/calculator_brain.dart';
+import 'package:provider/provider.dart';
+import 'package:bmi_calculator_app/gender_enum.dart';
 
-enum Gender {
-  male,
-  female,
-}
-
-class InputPage extends StatefulWidget {
-  @override
-  _InputPageState createState() => _InputPageState();
-}
-
-class _InputPageState extends State<InputPage> {
-  Gender selectedGender;
-
-  int _height = 150;
-  int _weight = 55;
-  int _age = 20;
-
-  bool _disableMinusButton = false;
-  bool _disablePlusButton = false;
-
+class InputPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,29 +21,38 @@ class _InputPageState extends State<InputPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Gender cards
           Expanded(
             child: Row(
               children: [
-                buildMaleBard(),
-                buildFemaleCard(),
+                genderCard(context, Gender.male, 'MALE', FontAwesomeIcons.mars),
+                genderCard(
+                    context, Gender.female, 'FEMALE', FontAwesomeIcons.venus),
               ],
             ),
           ),
-          buildHeightCard(),
+          // Slider
+          heightCard(context),
+          // Weight and Age cards
           Expanded(
             child: Row(
               children: [
-                buildWeightCard(),
-                buildAgeCard(),
+                weightCard(context),
+                ageCard(context),
               ],
             ),
           ),
           CalculateButton(
             onPressed: () {
               CalculatorBrain calc = CalculatorBrain(
-                age: _age,
-                height: _height,
-                weight: _weight,
+                age: Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                    .getAge,
+                height:
+                    Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                        .getHeight,
+                weight:
+                    Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                        .getWeight,
               );
 
               Navigator.push(
@@ -80,7 +73,7 @@ class _InputPageState extends State<InputPage> {
     );
   }
 
-  Expanded buildAgeCard() {
+  Expanded ageCard(BuildContext context) {
     return Expanded(
       child: ReusableCard(
         color: kInactiveCardColor,
@@ -92,7 +85,7 @@ class _InputPageState extends State<InputPage> {
               style: kLabelTextStyle,
             ),
             Text(
-              _age.toString(),
+              Provider.of<BmiIndicatorsNotifier>(context).getAge.toString(),
               style: kValueStyle,
             ),
             Row(
@@ -100,17 +93,13 @@ class _InputPageState extends State<InputPage> {
               children: [
                 RoundIconButton(
                   icon: FontAwesomeIcons.minus,
-                  onPressed: _disableMinusButton
+                  onPressed: Provider.of<BmiIndicatorsNotifier>(context)
+                          .isMinusButtonDisabled
                       ? null
                       : () {
-                          setState(() {
-                            if (_age <= 18) {
-                              _disableMinusButton = true;
-                              _disablePlusButton = false;
-                            } else {
-                              _age--;
-                            }
-                          });
+                          Provider.of<BmiIndicatorsNotifier>(context,
+                                  listen: false)
+                              .reduceAge();
                         },
                 ),
                 SizedBox(
@@ -118,17 +107,13 @@ class _InputPageState extends State<InputPage> {
                 ),
                 RoundIconButton(
                   icon: FontAwesomeIcons.plus,
-                  onPressed: _disablePlusButton
+                  onPressed: Provider.of<BmiIndicatorsNotifier>(context)
+                          .isPlusButtonDisabled
                       ? null
                       : () {
-                          setState(() {
-                            if (_age >= 65) {
-                              _disablePlusButton = true;
-                              _disableMinusButton = false;
-                            } else {
-                              _age++;
-                            }
-                          });
+                          Provider.of<BmiIndicatorsNotifier>(context,
+                                  listen: false)
+                              .incrementAge();
                         },
                 ),
               ],
@@ -139,7 +124,7 @@ class _InputPageState extends State<InputPage> {
     );
   }
 
-  Expanded buildWeightCard() {
+  Expanded weightCard(BuildContext context) {
     return Expanded(
       child: ReusableCard(
           color: kInactiveCardColor,
@@ -150,16 +135,20 @@ class _InputPageState extends State<InputPage> {
                 'WEIGHT',
                 style: kLabelTextStyle,
               ),
-              Text(_weight.toString(), style: kValueStyle),
+              Text(
+                Provider.of<BmiIndicatorsNotifier>(context)
+                    .getWeight
+                    .toString(),
+                style: kValueStyle,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RoundIconButton(
                     icon: FontAwesomeIcons.minus,
                     onPressed: () {
-                      setState(() {
-                        _weight--;
-                      });
+                      Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                          .reduceWeight();
                     },
                   ),
                   SizedBox(
@@ -168,9 +157,8 @@ class _InputPageState extends State<InputPage> {
                   RoundIconButton(
                     icon: FontAwesomeIcons.plus,
                     onPressed: () {
-                      setState(() {
-                        _weight++;
-                      });
+                      Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                          .incrementWeight();
                     },
                   )
                 ],
@@ -180,7 +168,7 @@ class _InputPageState extends State<InputPage> {
     );
   }
 
-  Expanded buildHeightCard() {
+  Expanded heightCard(BuildContext context) {
     return Expanded(
       child: ReusableCard(
         color: kInactiveCardColor,
@@ -196,7 +184,9 @@ class _InputPageState extends State<InputPage> {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
-                  _height.toString(),
+                  Provider.of<BmiIndicatorsNotifier>(context)
+                      .getHeight
+                      .toString(),
                   style: kValueStyle,
                 ),
                 Text(
@@ -205,73 +195,53 @@ class _InputPageState extends State<InputPage> {
                 ),
               ],
             ),
-            buildSlider(),
+            SliderTheme(
+              data: SliderThemeData(
+                activeTrackColor: Colors.white,
+                inactiveTrackColor: kLabelColor,
+                trackShape: RoundedRectSliderTrackShape(),
+                trackHeight: 1.0,
+                thumbColor: Color(0xFFEB1555),
+                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15.0),
+                overlayShape: RoundSliderOverlayShape(overlayRadius: 30.0),
+                overlayColor: Color(0x1fEB1555),
+              ),
+              child: Slider(
+                min: 10,
+                max: 250,
+                label: Provider.of<BmiIndicatorsNotifier>(context)
+                    .getHeight
+                    .toString(),
+                value: Provider.of<BmiIndicatorsNotifier>(context)
+                    .getHeight
+                    .toDouble(),
+                onChanged: (double value) {
+                  Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+                      .changeHeight(value.round());
+                },
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Expanded buildFemaleCard() {
+  Expanded genderCard(
+      BuildContext context, Gender gender, String label, IconData icon) {
     return Expanded(
       child: ReusableCard(
         onPress: () {
-          setState(() {
-            selectedGender = Gender.female;
-          });
+          Provider.of<BmiIndicatorsNotifier>(context, listen: false)
+              .changeGender(gender);
         },
-        color: selectedGender == Gender.female
+        color: Provider.of<BmiIndicatorsNotifier>(context).getGender == gender
             ? kActiveCardColor
             : kInactiveCardColor,
         cardChild: GenderCard(
-          icon: FontAwesomeIcons.venus,
-          label: 'FEMALE',
+          icon: icon,
+          label: label,
         ),
-      ),
-    );
-  }
-
-  Expanded buildMaleBard() {
-    return Expanded(
-      child: ReusableCard(
-        onPress: () {
-          setState(() {
-            selectedGender = Gender.male;
-          });
-        },
-        color: selectedGender == Gender.male
-            ? kActiveCardColor
-            : kInactiveCardColor,
-        cardChild: GenderCard(
-          icon: FontAwesomeIcons.mars,
-          label: 'MALE',
-        ),
-      ),
-    );
-  }
-
-  SliderTheme buildSlider() {
-    return SliderTheme(
-      data: SliderThemeData(
-        activeTrackColor: Colors.white,
-        inactiveTrackColor: kLabelColor,
-        trackShape: RoundedRectSliderTrackShape(),
-        trackHeight: 1.0,
-        thumbColor: Color(0xFFEB1555),
-        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15.0),
-        overlayShape: RoundSliderOverlayShape(overlayRadius: 30.0),
-        overlayColor: Color(0x1fEB1555),
-      ),
-      child: Slider(
-        min: 10,
-        max: 250,
-        label: _height.round().toString(),
-        value: _height.toDouble(),
-        onChanged: (double value) {
-          setState(() {
-            _height = value.round();
-          });
-        },
       ),
     );
   }
